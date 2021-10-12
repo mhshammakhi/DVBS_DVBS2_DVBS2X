@@ -32,3 +32,17 @@ for item in videoCh_list:
       except:
           print(str(streamList[item[0]]['index'])+' failed!')
         
+# The following command from is from llogan's answer to this question.  
+# ffprobe -v error -show_entries program=program_id:program_tags=service_name -of xml input.ts
+
+# Return a dictionary (The dictionary has 3 entries p['format'], p['programs'] and p['streams']).
+p = ffmpeg.probe(inputAddress, show_entries='program=program_id:program_tags=service_name:streams=stream_id:stream_tags=stream_index')
+
+programs = p['programs']  # Get p['programs']. programs is a list
+
+# Iterate programs.
+# program is a dictionary (entries are program['program_id'], program['streams'], program['tags'])
+for program in programs:
+    tags = program['tags']  # tags is a dictionary (has the entry tags['service_name']).
+    service_name = tags['service_name']
+    print('program_id ' + str(program['program_id']) + ' has Service Name: ' + service_name)
